@@ -20,9 +20,6 @@ export class AdminUserController{
                     return res.status(error.statusCode).json(
                         {success:false, message: error.message || "Internal Server Error"});
                     }
-        // 1. Validate
-        // 2. Call Service- reuse AuthService.registerUser
-        // 3. Handle response
         
 }
 }
