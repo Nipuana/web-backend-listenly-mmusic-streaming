@@ -38,12 +38,6 @@ export async function authorizedMiddleware(req:Request,res:Response,next:NextFun
         return res.status(401).json({message: err.message || 'Unauthorized'});
     }
             
-//     if(req.headers&& req.headers.authorization){
-//         next();
-//     }
-//     else{
-//         return res.status(401).json({message:'Unauthorized'});
-//     }
 }
 
 export async function adminMiddleware(req:Request,res:Response,next:NextFunction){
