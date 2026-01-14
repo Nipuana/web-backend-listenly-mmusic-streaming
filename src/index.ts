@@ -1,4 +1,5 @@
 import express,{Application,Request,Response} from 'express';
+import cors from 'cors';
 import { connectDB } from './database/mongodb';
 import dotenv from 'dotenv'
 import bodyParser = require('body-parser');
@@ -11,6 +12,12 @@ import adminRoutes from './routes/admin/admin.route'
 
 const app:Application = express();
 // const PORT:number = 3000;
+let corsOptions = {
+  origin: [ "http://localhost:3000", "http://localhost:3030" ],
+  // list of domains allowed access the server
+  // frontend domain/url 
+};
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
