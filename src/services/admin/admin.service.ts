@@ -1,5 +1,4 @@
 import { UserRepository } from "../../repositories/auth.repository";
-import z from "zod";
 import { CreateUserDto } from "../../dtos/auth.dtos";
 let userRepository = new UserRepository();
 
