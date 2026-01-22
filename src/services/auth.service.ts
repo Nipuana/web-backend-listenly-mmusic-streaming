@@ -46,4 +46,14 @@ export class AuthService{
        const token =  jwt.sign(payload, JWT_SECRET, {expiresIn:'30d'});
        return {token, user};
     }
+    async getUserById(userId:string){
+        if (!userId){
+            throw new HttpError(400, "User ID is required");
+        }
+        const user =await userRepository.getUserById(userId);
+        if(!user){
+            throw new HttpError(404, "User not found");
+        }
+        return user;
+    }
 }
