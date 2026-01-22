@@ -41,4 +41,28 @@ export class AuthController{
                 {success:false, message: error.message || "Internal Server Error"});
         }
     };
+
+async getUserById(req:Request, res:Response){
+    try{
+        const userId= req.params.id;
+        if(!userId){
+            return res.status(200).json(
+                {
+                    success:false, message: "Unauthorized"
+                }
+            
+            )
+        }
+        const user= await authService.getUserById(userId);
+        return res.status(200).json(
+            {
+                success:true, data: user, message: "Profile fetched successfully"
+            }
+        );
+        
+    }catch(error: Error | any){
+            return res.status(error.statusCode).json(
+                {success:false, message: error.message || "Internal Server Error"});
+        }
+    }
 }
