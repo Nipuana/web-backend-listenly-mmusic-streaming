@@ -1,12 +1,9 @@
 import { AuthService } from "../services/auth.service";
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from "../dtos/auth.dtos";
-import { UserRepository } from "../repositories/auth.repository";
 import  z, { success } from "zod";
 import { Request, Response } from "express";
-import { HttpError } from "../errors/http-error";
-import bcrypt from "bcryptjs/umd/types";
+
 let authService = new AuthService();
-let userRepository = new UserRepository();
 export class AuthController{
 
     async registerUser(req: Request, res: Response){
@@ -22,7 +19,7 @@ export class AuthController{
             return res.status(201).json({
                 success:true, data: newUser, message:" Registered Successfully"}
             )}catch( error:Error | any){ 
-            return res.status(error.statusCode).json(
+            return res.status(error.statusCode || 500).json(
                 {success:false, message: error.message || "Internal Server Error"});
             }
     }
@@ -64,33 +61,35 @@ async getUserById(req:Request, res:Response){
         );
         
     }catch(error: Error | any){
-            return res.status(error.statusCode).json(
+            return res.status(error.statusCode || 500).json(
                 {success:false, message: error.message || "Internal Server Error"});
         }
     }
 
-async updateUser(userId: string, data: UpdateUserDto){
-        const user = await userRepository.getUserById(userId);
-        if(!user){
-            throw new HttpError(404, "User not found");
-        }
-        if(user.email !== data.email){
-            const emailExists = await userRepository.getUserByEmail(data.email!);
-            if(emailExists){
-                throw new HttpError(409, "Email already exists");
+async updateUser(req: Request, res: Response){
+        try{
+            const userId = req.user?._id;
+            if(!userId){
+                return res.status(401).json(
+                    { success: false, message: "Unauthorized" }
+                )
             }
-        }
-        if(user.username !== data.username){
-            const usernameExists = await userRepository.getUserByUsername(data.username!);
-            if(usernameExists){
-                throw new HttpError(409, "Username already exists");
+            const parsedData = UpdateUserDto.safeParse(req.body);
+            if(!parsedData.success){
+                return res.status(400).json(
+                    { success: false, message: z.prettifyError(parsedData.error) }
+                )
             }
+            if(req.file){
+                parsedData.data.profilePicture = `/uploads/${req.file.filename}`;
+            }
+            const updatedUser = await authService.updateUser(userId, parsedData.data);
+            return res.status(200).json(
+                { success: true, data: updatedUser, message: "User updated successfully" }
+            )
+        }catch(error: Error | any){
+            return res.status(error.statusCode || 500).json(
+                {success:false, message: error.message || "Internal Server Error"});
         }
-        if(data.password){
-            const hashedPassword = await bcrypt.hash(data.password, 10);
-            data.password = hashedPassword;
-        }
-        const updatedUser = await userRepository.updateUserById(userId, data);
-        return updatedUser;
     }
 }

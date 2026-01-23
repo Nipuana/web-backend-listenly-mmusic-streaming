@@ -6,6 +6,8 @@ import bodyParser = require('body-parser');
 dotenv.config();
 console.log(process.env.PORT);
 import { PORT } from "./config"
+import path from 'path';
+
 //.env->PORT = 5050
 import authRoutes from './routes/auth.route'
 import adminRoutes from './routes/admin/admin.route'
@@ -18,6 +20,8 @@ let corsOptions = {
   // frontend domain/url 
 };
 app.use(cors(corsOptions));
+
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

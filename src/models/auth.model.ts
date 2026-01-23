@@ -6,7 +6,8 @@ const UserSchema: Schema = new Schema(
         email: { type: String, required: true, unique: true },
         username: { type: String, required: true, unique: true },
         password: { type: String, required: true },
-        role: { type: String, enum: ['user','artist','admin'], default: 'user' }
+        role: { type: String, enum: ['user','artist','admin'], default: 'user' },
+        profilePicture: { type: String, required: false },
     },
     {
         timestamps: true,
