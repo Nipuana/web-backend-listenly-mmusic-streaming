@@ -44,7 +44,7 @@ export class AuthController{
 
 async getUserById(req:Request, res:Response){
     try{
-        const userId= req.params.id;
+        const userId= req.user?._id ;
         if(!userId){
             return res.status(200).json(
                 {
