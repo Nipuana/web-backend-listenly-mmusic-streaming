@@ -5,7 +5,8 @@ import  {userType} from "../types/auth.type";
 export const CreateUserDto = userType.pick({
     username: true,
     email: true,
-    password: true
+    password: true,
+    role: true,
 }).extend({
     confirmPassword: z.string().min(6, "Confirm Password must be at least 6 characters long"),
     profilePicture: z.string().optional()
