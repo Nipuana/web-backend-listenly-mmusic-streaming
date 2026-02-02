@@ -33,7 +33,7 @@ app.get('/',(req:Request,res:Response)=>{
 });
 app.use('/api/auth',authRoutes)
 app.use('/api/admin',adminRoutes)
-app.use('/api/users',userInfoRoutes)
+app.use('/api/userInfo',userInfoRoutes)
 
 async function startServer(){
     await connectDB();
