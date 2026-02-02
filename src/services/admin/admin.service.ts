@@ -4,8 +4,6 @@ let userRepository = new UserRepository();
 
 export class AdminUserService {
     async createUser(data: CreateUserDto) {
-        //logic to create userby admin, same as auth service register user
-        // Can add additional admin-specific logic here if needed
         const emailExists = await userRepository.getUserByEmail(data.email);
         if (emailExists) {
             throw new Error("Email already registered");
@@ -14,20 +12,44 @@ export class AdminUserService {
         if (usernameExists) {
             throw new Error("Username already exists");
         }
+        // Hash password if not already hashed
+        const bcrypt = require('bcryptjs');
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+        data.password = hashedPassword;
+        const newUser = await userRepository.createUser(data);
+        return newUser;
     }
-    async getAllUsers() {
 
-        //logic to get all users
+    async getAllUsers() {
         const users = await userRepository.getAllUsers();
-        // transform data if needed
         return users;
     }
+
     async getUserById(userId: string) {
-        //logic to get user by id
         const user = await userRepository.getUserById(userId);
         if (!user) {
             throw new Error("User not found");
         }
         return user;
+    }
+
+    async updateUser(userId: string, data: any) {
+        if (data.password) {
+            const bcrypt = require('bcryptjs');
+            data.password = await bcrypt.hash(data.password, 10);
+        }
+        const updatedUser = await userRepository.updateUserById(userId, data);
+        if (!updatedUser) {
+            throw new Error("User not found");
+        }
+        return updatedUser;
+    }
+
+    async deleteUser(userId: string) {
+        const deletedUser = await userRepository.deleteUserById(userId);
+        if (!deletedUser) {
+            throw new Error("User not found");
+        }
+        return deletedUser;
     }
 }
