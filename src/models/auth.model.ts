@@ -32,22 +32,6 @@ const UserSchema: Schema = new Schema(
     }
 )
 
-// Calculate age
-UserSchema.virtual('additionalInfo.calculatedAge').get(function(this: IUser) {
-    if (this.additionalInfo?.dateOfBirth) {
-        const today = new Date();
-        const birthDate = new Date(this.additionalInfo.dateOfBirth);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        
-        return age;
-    }
-    return undefined;
-})
 export interface IUser extends UserType, Document {
     _id: mongoose.Types.ObjectId; // mongo related attribute
     additionalInfo?: UserInfoType;

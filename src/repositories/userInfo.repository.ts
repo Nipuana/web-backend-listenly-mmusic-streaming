@@ -9,9 +9,16 @@ export interface IUserInfoRepository {
 
 export class UserInfoRepository implements IUserInfoRepository {
     async updateUserInfo(userId: string, additionalInfo: UserInfoType): Promise<IUser | null> {
+        // Get current user to merge with existing additionalInfo
+        const currentUser = await UserModel.findById(userId);
+        const merged = {
+            ...currentUser?.additionalInfo,
+            ...additionalInfo
+        };
+        
         const updatedUser = await UserModel.findByIdAndUpdate(
             userId,
-            { $set: { additionalInfo } },
+            { $set: { additionalInfo: merged } },
             { new: true, runValidators: true }
         ).select('-password');
         return updatedUser;
