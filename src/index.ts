@@ -11,6 +11,7 @@ import path from 'path';
 //.env->PORT = 5050
 import authRoutes from './routes/auth.route'
 import adminRoutes from './routes/admin/admin.route'
+import userInfoRoutes from './routes/userInfo.route'
 
 const app:Application = express();
 // const PORT:number = 3000;
@@ -32,6 +33,7 @@ app.get('/',(req:Request,res:Response)=>{
 });
 app.use('/api/auth',authRoutes)
 app.use('/api/admin',adminRoutes)
+app.use('/api/users',userInfoRoutes)
 
 async function startServer(){
     await connectDB();
