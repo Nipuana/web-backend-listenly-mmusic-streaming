@@ -81,7 +81,7 @@ async updateUser(req: Request, res: Response){
                 )
             }
             if(req.file){
-                parsedData.data.profilePicture = `/uploads/${req.file.filename}`;
+                parsedData.data.profilePicture = `/uploads/images/pfp/${req.file.filename}`;
             }
             const updatedUser = await authService.updateUser(userId, parsedData.data);
             return res.status(200).json(
@@ -90,6 +90,37 @@ async updateUser(req: Request, res: Response){
         }catch(error: Error | any){
             return res.status(error.statusCode || 500).json(
                 {success:false, message: error.message || "Internal Server Error"});
+        }
+    }
+    async sendResetPasswordEmail(req: Request, res: Response) {
+        try {
+            const email = req.body.email;
+            const user = await authService.sendResetPasswordEmail(email);
+            return res.status(200).json(
+                { success: true,
+                    data: user,
+                    message: "If the email is registered, a reset link has been sent." }
+            );
+        } catch (error: Error | any) {
+            return res.status(error.statusCode ?? 500).json(
+                { success: false, message: error.message || "Internal Server Error" }
+            );
+        }
+    }
+
+    async resetPassword(req: Request, res: Response) {
+        try {
+
+           const token = req.params.token;
+            const { newPassword } = req.body;
+            await authService.resetPassword(token, newPassword);
+            return res.status(200).json(
+                { success: true, message: "Password has been reset successfully." }
+            );
+        } catch (error: Error | any) {
+            return res.status(error.statusCode ?? 500).json(
+                { success: false, message: error.message || "Internal Server Error" }
+            );
         }
     }
 }
