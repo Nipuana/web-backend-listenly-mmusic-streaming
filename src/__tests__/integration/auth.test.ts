@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from "../../app";
 import { UserModel } from '../../models/user_models/auth.model';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../../config';
+import { JWT_SECRET } from '../../config/db_config';
 
 jest.mock('../../config/email', () => ({
     sendEmail: jest.fn().mockResolvedValue(undefined),

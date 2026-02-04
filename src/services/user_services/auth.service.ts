@@ -2,9 +2,9 @@ import { UserRepository } from "../../repositories/user_repositories/auth.reposi
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from "../../dtos/user_dtos/auth.dtos";
 import bcrypt from 'bcryptjs';
 import { HttpError } from "../../errors/http-error";
-import { JWT_SECRET } from "../../config";
+import { JWT_SECRET } from "../../config/db_config";
 import jwt from 'jsonwebtoken';
-import { sendEmail } from "../../config/email";
+import { sendEmail } from "../../config/req_email_config/email";
 
 const CLIENT_URL = process.env.CLIENT_URL as string;
 
