@@ -4,6 +4,9 @@ import bcrypt from 'bcryptjs';
 import { HttpError } from "../errors/http-error";
 import { JWT_SECRET } from "../config";
 import jwt from 'jsonwebtoken';
+import { sendEmail } from "../config/email";
+
+const CLIENT_URL = process.env.CLIENT_URL as string;
 
 
 let userRepository=new UserRepository
@@ -80,5 +83,39 @@ async updateUser(userId: string, data: UpdateUserDto){
         }
         const updatedUser = await userRepository.updateUserById(userId, data);
         return updatedUser;
+    }
+async sendResetPasswordEmail(email?: string) {
+        if (!email) {
+            throw new HttpError(400, "Email is required");
+        }
+        const user = await userRepository.getUserByEmail(email);
+        if (!user) {
+            throw new HttpError(404, "User not found");
+        }
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' }); // 1 hour expiry
+        const resetLink = `${CLIENT_URL}/reset-password?token=${token}`;
+        const html = `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.</p>`;
+        await sendEmail(user.email, "Password Reset", html);
+        return user;
+
+    }
+
+    async resetPassword(token?: string, newPassword?: string) {
+        try {
+            if (!token || !newPassword) {
+                throw new HttpError(400, "Token and new password are required");
+            }
+            const decoded: any = jwt.verify(token, JWT_SECRET);
+            const userId = decoded.id;
+            const user = await userRepository.getUserById(userId);
+            if (!user) {
+                throw new HttpError(404, "User not found");
+            }
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            await userRepository.updateUserById(userId, { password: hashedPassword });
+            return user;
+        } catch (error) {
+            throw new HttpError(400, "Invalid or expired token");
+        }
     }
 }
