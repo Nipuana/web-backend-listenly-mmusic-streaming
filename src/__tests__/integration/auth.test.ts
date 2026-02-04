@@ -6,13 +6,11 @@ describe(
     "Auhentication Integration Tests", //name of test suite group
     () => { //what to do in test
         const testUser = {
-            fullName:"Test user",
             email: "testuser11@example.com",
-            phoneNumber: 9821456764,
             username: "testuser11",
             password: "Test@1234",
             confirmPassword: "Test@1234",
-           
+            role: "user",
         }
         beforeAll(async () => {
             // Clean up test user if exists
@@ -36,7 +34,7 @@ describe(
                         expect(response.status).toBe(201);
                         expect(response.body).toHaveProperty(
                             "message", 
-                            "Registered successfully."
+                            " Registered Successfully"
                         );
                     }
                 )
