@@ -1,5 +1,5 @@
 import { UserRepository } from "../repositories/auth.repository";
-import { CreateUserDto, LoginUserDto } from "../dtos/auth.dtos";
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from "../dtos/auth.dtos";
 import bcrypt from 'bcryptjs';
 import { HttpError } from "../errors/http-error";
 import { JWT_SECRET } from "../config";
@@ -45,5 +45,40 @@ export class AuthService{
        };
        const token =  jwt.sign(payload, JWT_SECRET, {expiresIn:'30d'});
        return {token, user};
+    }
+    async getUserById(userId:string){
+        if (!userId){
+            throw new HttpError(400, "User ID is required");
+        }
+        const user =await userRepository.getUserById(userId);
+        if(!user){
+            throw new HttpError(404, "User not found");
+        }
+        return user;
+    }
+
+async updateUser(userId: string, data: UpdateUserDto){
+        const user = await userRepository.getUserById(userId);
+        if(!user){
+            throw new HttpError(404, "User not found");
+        }
+        if(user.email !== data.email){
+            const emailExists = await userRepository.getUserByEmail(data.email!);
+            if(emailExists){
+                throw new HttpError(409, "Email already exists");
+            }
+        }
+        if(user.username !== data.username){
+            const usernameExists = await userRepository.getUserByUsername(data.username!);
+            if(usernameExists){
+                throw new HttpError(409, "Username already exists");
+            }
+        }
+        if(data.password){
+            const hashedPassword = await bcrypt.hash(data.password, 10);
+            data.password = hashedPassword;
+        }
+        const updatedUser = await userRepository.updateUserById(userId, data);
+        return updatedUser;
     }
 }

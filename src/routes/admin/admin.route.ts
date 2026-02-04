@@ -6,10 +6,16 @@ import { authorizedMiddleware,adminMiddleware } from '../../middlewares/authoriz
 const router :Router = Router();
 const adminUserController = new AdminUserController();
 
-router.post('/',authorizedMiddleware, adminMiddleware, adminUserController.createUser);
 
-router.get('/test', authorizedMiddleware,adminMiddleware,(req:Request, res:Response) => {
-    res.send('Admin User Route is working');
-});
+// Create user
+router.post('/create-user', authorizedMiddleware, adminMiddleware, adminUserController.createUser.bind(adminUserController));
+// Get all users
+router.get('/get-all-users', authorizedMiddleware, adminMiddleware, adminUserController.getAllUsers.bind(adminUserController));
+// Get user by id
+router.get('/get-user/:id', authorizedMiddleware, adminMiddleware, adminUserController.getUserById.bind(adminUserController));
+// Update user
+router.put('/update-user/:id', authorizedMiddleware, adminMiddleware, adminUserController.updateUser.bind(adminUserController));
+// Delete user
+router.delete('/delete-user/:id', authorizedMiddleware, adminMiddleware, adminUserController.deleteUser.bind(adminUserController));
 
 export default router;
