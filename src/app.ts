@@ -8,6 +8,7 @@ import authRoutes from './routes/user_routes/auth.route'
 import adminRoutes from './routes/admin_routes/admin.route'
 import userInfoRoutes from './routes/user_routes/userInfo.route'
 import songRoutes from './routes/song_routes/song.route'
+import likeRoutes from './routes/song_routes/like.route'
 import playlistRoutes from './routes/playlist_routes/playlist.route'
 
 const app:Application = express();
@@ -32,6 +33,7 @@ app.use('/api/auth',authRoutes)
 app.use('/api/admin',adminRoutes)
 app.use('/api/userInfo',userInfoRoutes)
 app.use('/api/songs',songRoutes)
+app.use('/api/songs',likeRoutes)
 app.use('/api/playlists',playlistRoutes)
 
 export default app;
