@@ -10,11 +10,8 @@ router.post('/login', authController.loginUser);
 
 router.get('/profile',authorizedMiddleware, authController.getUserById);
 
-router.put(
-    '/update-profile',
-    authorizedMiddleware,
-    uploads.single('profilePicture'),
-    authController.updateUser
-)
+router.put('/update-profile',authorizedMiddleware,uploads.single('profilePicture'),authController.updateUser);
+router.post("/request-password-reset", authController.sendResetPasswordEmail);
+router.post("/reset-password/:token", authController.resetPassword);
 
 export default router;
