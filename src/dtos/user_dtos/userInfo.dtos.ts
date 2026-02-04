@@ -1,5 +1,5 @@
 import z from "zod";
-import { userInfoType } from "../types/userInfo.type";
+import { userInfoType } from "../../types/user_types/userInfo.type";
 
 export const UpdateUserInfoDto = userInfoType.partial().extend({
     dateOfBirth: z.string().or(z.date()).optional()
