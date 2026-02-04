@@ -11,6 +11,7 @@ export const songType = z.object({
     lyrics: z.string().optional(),
     playCount: z.number().int().nonnegative().default(0),
     likeCount: z.number().int().nonnegative().default(0),
+    listenTimeSeconds: z.number().int().nonnegative().default(0),
     isPublic: z.boolean().default(true),
     uploadedBy: z.string(), 
 });
