@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 
 dotenv.config();
 console.log(process.env.PORT);
-import { PORT } from "./config"
+import { PORT } from "./config/db_config"
 
 
 async function startServer(){
