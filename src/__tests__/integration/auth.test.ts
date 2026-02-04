@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from "../../app";
-import { UserModel } from '../../models/auth.model';
+import { UserModel } from '../../models/user_models/auth.model';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../../config';
 

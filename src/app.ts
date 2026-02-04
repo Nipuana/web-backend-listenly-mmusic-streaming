@@ -4,11 +4,11 @@ import bodyParser = require('body-parser');
 
 import path from 'path';
 //.env->PORT = 5050
-import authRoutes from './routes/auth.route'
-import adminRoutes from './routes/admin/admin.route'
-import userInfoRoutes from './routes/userInfo.route'
-import songRoutes from './routes/song.route'
-import playlistRoutes from './routes/playlist.route'
+import authRoutes from './routes/user_routes/auth.route'
+import adminRoutes from './routes/admin_routes/admin.route'
+import userInfoRoutes from './routes/user_routes/userInfo.route'
+import songRoutes from './routes/song_routes/song.route'
+import playlistRoutes from './routes/playlist_routes/playlist.route'
 
 const app:Application = express();
 // const PORT:number = 3000;
