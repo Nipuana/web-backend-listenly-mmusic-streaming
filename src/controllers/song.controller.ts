@@ -1,5 +1,5 @@
 import { SongService } from "../services/song.service";
-import { CreateSongDto, UpdateSongDto, QuerySongsDto } from "../dtos/song.dtos";
+import { CreateSongDto, UpdateSongDto, QuerySongsDto, TrackListenTimeDto } from "../dtos/song.dtos";
 import { Utils } from "../utils/common.utils";
 import { Request, Response } from "express";
 import z from "zod";
@@ -259,6 +259,37 @@ export class SongController {
                 success: true,
                 data: song,
                 message: "Play count updated"
+            });
+        } catch (error: Error | any) {
+            return res.status(error.statusCode || 500).json({
+                success: false,
+                message: error.message || "Internal Server Error"
+            });
+        }
+    }
+
+    // Track listen time for a song
+    async addListenTime(req: Request, res: Response) {
+        try {
+            const songId = req.params.id;
+
+            const bodyData = {
+                seconds: req.body.seconds !== undefined ? parseInt(req.body.seconds, 10) : undefined,
+            };
+
+            const parsedData = TrackListenTimeDto.safeParse(bodyData);
+            if (!parsedData.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: z.prettifyError(parsedData.error)
+                });
+            }
+
+            const song = await songService.addListenTime(songId, parsedData.data.seconds);
+            return res.status(200).json({
+                success: true,
+                data: song,
+                message: "Listen time updated"
             });
         } catch (error: Error | any) {
             return res.status(error.statusCode || 500).json({

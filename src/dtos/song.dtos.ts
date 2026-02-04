@@ -32,3 +32,10 @@ export const QuerySongsDto = z.object({
 });
 
 export type QuerySongsDto = z.infer<typeof QuerySongsDto>;
+
+// Track listen time DTO
+export const TrackListenTimeDto = z.object({
+    seconds: z.number().int().nonnegative(),
+});
+
+export type TrackListenTimeDto = z.infer<typeof TrackListenTimeDto>;

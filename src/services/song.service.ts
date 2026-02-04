@@ -114,4 +114,16 @@ export class SongService {
         }
         return song;
     }
+
+    async addListenTime(songId: string, seconds: number) {
+        if (seconds < 0) {
+            throw new HttpError(400, "Listen time must be non-negative");
+        }
+
+        const song = await songRepository.incrementListenTime(songId, seconds);
+        if (!song) {
+            throw new HttpError(404, "Song not found");
+        }
+        return song;
+    }
 }

@@ -10,6 +10,7 @@ export interface ISongRepository {
     getSongsByUploadedBy(userId: string): Promise<ISong[]>;
     searchSongs(searchTerm: string): Promise<ISong[]>;
     incrementPlayCount(id: string): Promise<ISong | null>;
+    incrementListenTime(id: string, seconds: number): Promise<ISong | null>;
 }
 
 export class SongRepository implements ISongRepository {
@@ -68,6 +69,15 @@ export class SongRepository implements ISongRepository {
         const song = await SongModel.findByIdAndUpdate(
             id,
             { $inc: { playCount: 1 } },
+            { new: true }
+        );
+        return song;
+    }
+
+    async incrementListenTime(id: string, seconds: number): Promise<ISong | null> {
+        const song = await SongModel.findByIdAndUpdate(
+            id,
+            { $inc: { listenTimeSeconds: seconds } },
             { new: true }
         );
         return song;

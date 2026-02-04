@@ -17,6 +17,7 @@ const SongSchema: Schema = new Schema(
         lyrics: { type: String, required: false },
         playCount: { type: Number, default: 0 },
         likeCount: { type: Number, default: 0 },
+        listenTimeSeconds: { type: Number, default: 0 },
         isPublic: { type: Boolean, default: true },
         uploadedBy: { 
             type: mongoose.Schema.Types.ObjectId, 

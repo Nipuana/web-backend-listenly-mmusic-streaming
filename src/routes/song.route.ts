@@ -17,6 +17,7 @@ router.get('/getSongsBygenre/:genre', authorizedMiddleware, songController.getSo
 router.get('/getSongById/:id', authorizedMiddleware, songController.getSongById);
 router.get('/like-status/:id/liked', authorizedMiddleware, likeController.checkIfLiked);
 router.post('/play-count/:id', authorizedMiddleware, songController.incrementPlayCount);
+router.post('/listen-time/:id', authorizedMiddleware, songController.addListenTime);
 router.post('/change-like-status/:id', authorizedMiddleware, likeController.toggleLike);
 
 // Create, update, delete routes (require authentication + ownership)
