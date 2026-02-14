@@ -1,8 +1,8 @@
 import { Request,Response,NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from "../config";
-import{IUser} from '../models/auth.model';
-import { UserRepository } from "../repositories/auth.repository";
+import{IUser} from '../models/user_models/auth.model';
+import { UserRepository } from "../repositories/user_repositories/auth.repository";
 import { HttpError } from "../errors/http-error";
 
 let userRepository=new UserRepository();
