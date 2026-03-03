@@ -30,7 +30,7 @@ export class PlaylistService {
         }
 
         // Check if playlist is private and user is not the owner
-        if (!playlist.isPublic && playlist.createdBy.toString() !== userId) {
+        if (playlist.visibility === 'private' && (!userId || !playlist.createdBy._id.equals(userId))) {
             throw new HttpError(403, "This playlist is private");
         }
 
@@ -43,7 +43,7 @@ export class PlaylistService {
         const { search, sortBy, order, limit, page } = query;
 
         // Build filter - only public playlists for general browsing
-        const filter: any = { isPublic: true };
+        const filter: any = { visibility: 'public' };
 
         // Handle text search
         if (search) {
@@ -72,11 +72,21 @@ export class PlaylistService {
         }
 
         // Check if user is the owner
-        if (playlist.createdBy.toString() !== userId) {
+        if (!playlist.createdBy._id.equals(userId)) {
             throw new HttpError(403, "You are not authorized to update this playlist");
         }
 
+        // Ensure coverImageUrl has default if set to empty
+        if (data.coverImageUrl === '') {
+            data.coverImageUrl = '/uploads/defaults/playlist_default.png';
+        }
+
         const updatedPlaylist = await playlistRepository.updatePlaylistById(playlistId, data);
+        if (!updatedPlaylist?.coverImageUrl) {
+            await playlistRepository.updatePlaylistById(playlistId, {
+                coverImageUrl: '/uploads/defaults/playlist_default.png'
+            });
+        }
         return updatedPlaylist;
     }
 
@@ -88,7 +98,7 @@ export class PlaylistService {
         }
 
         // Check if user is the owner
-        if (playlist.createdBy.toString() !== userId) {
+        if (!playlist.createdBy._id.equals(userId)) {
             throw new HttpError(403, "You are not authorized to delete this playlist");
         }
 
@@ -109,7 +119,7 @@ export class PlaylistService {
         }
 
         // Check if user is the owner
-        if (playlist.createdBy.toString() !== userId) {
+        if (!playlist.createdBy._id.equals(userId)) {
             throw new HttpError(403, "You are not authorized to modify this playlist");
         }
 
@@ -136,7 +146,7 @@ export class PlaylistService {
         }
 
         // Check if user is the owner
-        if (playlist.createdBy.toString() !== userId) {
+        if (!playlist.createdBy._id.equals(userId)) {
             throw new HttpError(403, "You are not authorized to modify this playlist");
         }
 
@@ -152,7 +162,7 @@ export class PlaylistService {
         }
 
         // Check if user is the owner
-        if (playlist.createdBy.toString() !== userId) {
+        if (!playlist.createdBy._id.equals(userId)) {
             throw new HttpError(403, "You are not authorized to modify this playlist");
         }
 
@@ -199,7 +209,7 @@ export class PlaylistService {
 
     // Helper method to enrich playlist with calculated data
     private async enrichPlaylistData(playlist: any) {
-        const songIds = playlist.songs.map((s: any) => s.songId.toString());
+        const songIds = playlist.songs.map((s: any) => s.songId._id.toString());
 
         if (songIds.length === 0) {
             return {

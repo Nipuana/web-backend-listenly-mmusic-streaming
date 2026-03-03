@@ -22,7 +22,10 @@ export class AdminUserService {
 
     async getAllUsers() {
         const users = await userRepository.getAllUsers();
-        return users;
+        return users.map(user => {
+            const { password, ...userWithoutPassword } = user.toObject ? user.toObject() : user;
+            return userWithoutPassword;
+        });
     }
 
     async getUserById(userId: string) {
@@ -30,7 +33,8 @@ export class AdminUserService {
         if (!user) {
             throw new Error("User not found");
         }
-        return user;
+        const { password, ...userWithoutPassword } = user.toObject ? user.toObject() : user;
+        return userWithoutPassword;
     }
 
     async updateUser(userId: string, data: any) {

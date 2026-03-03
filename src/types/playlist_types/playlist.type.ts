@@ -4,7 +4,7 @@ export const playlistType = z.object({
     name: z.string().min(1, "Name is required").max(100, "Name too long"),
     description: z.string().max(500, "Description too long").optional(),
     coverImageUrl: z.string().optional(),
-    isPublic: z.boolean().default(true),
+    visibility: z.enum(["public", "private"]).default("public"),
     createdBy: z.string(), // User ID reference
     songs: z.array(z.object({
         songId: z.string(),

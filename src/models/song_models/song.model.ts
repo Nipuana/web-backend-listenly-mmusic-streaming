@@ -7,18 +7,37 @@ const SongSchema: Schema = new Schema(
         album: { type: String, required: false },
         genre: { 
             type: String, 
-            enum: ['pop', 'rock', 'hip-hop', 'jazz', 'classical', 'electronic', 'r&b', 'country', 'other'],
+            enum: [
+                'pop',
+                'rock',
+                'hip-hop',
+                'electronic',
+                'soul',
+                'country',
+                'jazz',
+                'classical',
+                'latin',
+                'folk',
+                'blues',
+                'reggae',
+                'metal',
+                'gospel',
+                'other'
+            ],
             default: 'other'
         },
-        duration: { type: Number, required: true },
-        releaseDate: { type: Date, required: false },
+        duration: { type: Number, required: false },
+        releaseDate: { type: Date, default: Date.now },
         audioUrl: { type: String, required: false },
-        coverImageUrl: { type: String, required: false },
-        lyrics: { type: String, required: false },
+        coverImageUrl: { type: String, default: '/uploads/defaults/song_default.png' },
         playCount: { type: Number, default: 0 },
         likeCount: { type: Number, default: 0 },
         listenTimeSeconds: { type: Number, default: 0 },
-        isPublic: { type: Boolean, default: true },
+        visibility: { 
+            type: String, 
+            enum: ['public', 'private', 'unlisted'], 
+            default: 'public' 
+        },
         uploadedBy: { 
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'User',

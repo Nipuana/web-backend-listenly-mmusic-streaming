@@ -7,18 +7,18 @@ const router = Router();
 const playlistController = new PlaylistController();
 
 // All routes require authentication
-router.get('/', authorizedMiddleware, playlistController.getAllPlaylists);
+router.get('/get-all', authorizedMiddleware, playlistController.getAllPlaylists);
 router.get('/user/my-playlists', authorizedMiddleware, playlistController.getMyPlaylists);
-router.get('/:id', authorizedMiddleware, playlistController.getPlaylistById);
+router.get('/getPlaylistById/:id', authorizedMiddleware, playlistController.getPlaylistById);
 
 // Create, update, delete routes (require authentication + ownership)
-router.post('/', authorizedMiddleware, uploads.single('playlistCover'), playlistController.createPlaylist);
-router.put('/:id', authorizedMiddleware, uploads.single('playlistCover'), playlistController.updatePlaylist);
-router.delete('/:id', authorizedMiddleware, playlistController.deletePlaylist);
+router.post('/create-playlist', authorizedMiddleware, uploads.single('playlistCover'), playlistController.createPlaylist);
+router.put('/update-playlist/:id', authorizedMiddleware, uploads.single('playlistCover'), playlistController.updatePlaylist);
+router.delete('/delete-playlist/:id', authorizedMiddleware, playlistController.deletePlaylist);
 
 // Song management in playlists
 router.post('/:id/songs', authorizedMiddleware, playlistController.addSongToPlaylist);
-router.delete('/:id/songs/:songId', authorizedMiddleware, playlistController.removeSongFromPlaylist);
-router.put('/:id/songs/reorder', authorizedMiddleware, playlistController.reorderSongsInPlaylist);
+router.delete('/remove-song-from-playlist/:id/:songId', authorizedMiddleware, playlistController.removeSongFromPlaylist);
+router.put('/reorder-songs/:id', authorizedMiddleware, playlistController.reorderSongsInPlaylist);
 
 export default router;

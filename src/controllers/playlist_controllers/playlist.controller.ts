@@ -20,6 +20,8 @@ export class PlaylistController {
             // Handle cover image upload
             if (req.file) {
                 parsedData.data.coverImageUrl = `/uploads/images/playlist_img/${req.file.filename}`;
+            } else {
+                parsedData.data.coverImageUrl = '/uploads/defaults/playlist_default.png';
             }
 
             const userId = req.user?._id;

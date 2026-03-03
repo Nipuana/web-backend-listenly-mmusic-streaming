@@ -7,7 +7,7 @@ const router = Router();
 const songController = new SongController();
 // All routes require authentication
 router.get('/get-all-songs', authorizedMiddleware, songController.getAllSongs);
-router.get('/user/my-songs', authorizedMiddleware, songController.getMySongs);
+router.get('/my-songs', authorizedMiddleware, songController.getMySongs);
 router.get('/getSongByuserId/:userId', authorizedMiddleware, songController.getSongsByUserId);
 router.get('/getSongsBygenre/:genre', authorizedMiddleware, songController.getSongsByGenre);
 router.get('/getSongById/:id', authorizedMiddleware, songController.getSongById);

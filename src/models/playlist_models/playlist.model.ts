@@ -10,8 +10,8 @@ const PlaylistSchema: Schema = new Schema(
     {
         name: { type: String, required: true, maxlength: 100 },
         description: { type: String, maxlength: 500 },
-        coverImageUrl: { type: String },
-        isPublic: { type: Boolean, default: true },
+        coverImageUrl: { type: String, default: '/uploads/defaults/playlist_default.png' },
+        visibility: { type: String, enum: ['public', 'private'], default: 'public' },
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
@@ -26,12 +26,6 @@ const PlaylistSchema: Schema = new Schema(
         toObject: { virtuals: true }
     }
 );
-
-// Indexes for efficient queries
-PlaylistSchema.index({ name: 'text', description: 'text' });
-PlaylistSchema.index({ createdBy: 1 });
-PlaylistSchema.index({ isPublic: 1 });
-PlaylistSchema.index({ favoriteCount: -1 });
 
 // Virtual for song count
 PlaylistSchema.virtual('songCount').get(function(this: IPlaylist) {

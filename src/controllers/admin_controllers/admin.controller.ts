@@ -2,7 +2,9 @@ import { CreateUserDto } from "../../dtos/user_dtos/auth.dtos";
 import z from "zod"
 import { Request, Response } from "express";
 import { AdminUserService } from "../../services/admin_services/admin.service";
+import { LikeService } from "../../services/song_services/like.service";
 let adminUserService = new AdminUserService();
+let likeService = new LikeService();
 
 export class AdminUserController{
     async createUser(req:Request, res: Response){
@@ -53,6 +55,15 @@ export class AdminUserController{
         try {
             const deletedUser = await adminUserService.deleteUser(req.params.id);
             return res.status(200).json({ success: true, data: deletedUser, message: "Deleted User Successfully" });
+        } catch (error: Error | any) {
+            return res.status(error.statusCode || 500).json({ success: false, message: error.message || "Internal Server Error" });
+        }
+    }
+
+    async cleanOrphanedLikes(req: Request, res: Response) {
+        try {
+            const result = await likeService.cleanOrphanedLikes();
+            return res.status(200).json({ success: true, data: result, message: result.message });
         } catch (error: Error | any) {
             return res.status(error.statusCode || 500).json({ success: false, message: error.message || "Internal Server Error" });
         }

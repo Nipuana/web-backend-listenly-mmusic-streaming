@@ -6,7 +6,7 @@ export const CreatePlaylistDto = playlistType.pick({
     name: true,
     description: true,
     coverImageUrl: true,
-    isPublic: true,
+    visibility: true,
 });
 
 export type CreatePlaylistDto = z.infer<typeof CreatePlaylistDto>;

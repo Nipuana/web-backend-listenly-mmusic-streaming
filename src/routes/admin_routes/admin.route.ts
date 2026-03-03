@@ -8,14 +8,16 @@ const adminUserController = new AdminUserController();
 
 
 // Create user
-router.post('/create-user', authorizedMiddleware, adminMiddleware, adminUserController.createUser.bind(adminUserController));
+router.post('/create-user', authorizedMiddleware, adminMiddleware, adminUserController.createUser);
 // Get all users
-router.get('/get-all-users', authorizedMiddleware, adminMiddleware, adminUserController.getAllUsers.bind(adminUserController));
+router.get('/get-all-users', authorizedMiddleware,adminMiddleware, adminUserController.getAllUsers);
 // Get user by id
-router.get('/get-user/:id', authorizedMiddleware, adminMiddleware, adminUserController.getUserById.bind(adminUserController));
+router.get('/get-user/:id', authorizedMiddleware, adminUserController.getUserById);
 // Update user
-router.put('/update-user/:id', authorizedMiddleware, adminMiddleware, adminUserController.updateUser.bind(adminUserController));
+router.put('/update-user/:id', authorizedMiddleware, adminMiddleware, adminUserController.updateUser);
 // Delete user
-router.delete('/delete-user/:id', authorizedMiddleware, adminMiddleware, adminUserController.deleteUser.bind(adminUserController));
+router.delete('/delete-user/:id', authorizedMiddleware, adminMiddleware, adminUserController.deleteUser);
+// Clean orphaned likes
+router.delete('/clean-orphaned-likes', authorizedMiddleware, adminMiddleware, adminUserController.cleanOrphanedLikes);
 
 export default router;
