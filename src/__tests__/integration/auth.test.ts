@@ -208,7 +208,7 @@ describe(
                 test(
                     "should reset password",
                     async () => {
-                        const token = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '1h' });
+                        const token = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '30d' });
                         const response = await request(app)
                             .post(`/api/auth/reset-password/${token}`)
                             .send({ newPassword: "NewPass@123" });
