@@ -11,6 +11,7 @@ router.get('/my-songs', authorizedMiddleware, songController.getMySongs);
 router.get('/getSongByuserId/:userId', authorizedMiddleware, songController.getSongsByUserId);
 router.get('/getSongsBygenre/:genre', authorizedMiddleware, songController.getSongsByGenre);
 router.get('/getSongById/:id', authorizedMiddleware, songController.getSongById);
+router.get('/stats/overall', authorizedMiddleware, songController.getOverallStats);
 router.post('/play-count/:id', authorizedMiddleware, songController.incrementPlayCount);
 router.post('/listen-time/:id', authorizedMiddleware, songController.addListenTime);
 

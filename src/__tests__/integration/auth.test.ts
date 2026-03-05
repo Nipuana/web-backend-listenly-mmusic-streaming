@@ -4,7 +4,7 @@ import { UserModel } from '../../models/user_models/auth.model';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../../config/db_config';
 
-jest.mock('../../config/email', () => ({
+jest.mock('../../config/req_email_config/email', () => ({
     sendEmail: jest.fn().mockResolvedValue(undefined),
 }));
 

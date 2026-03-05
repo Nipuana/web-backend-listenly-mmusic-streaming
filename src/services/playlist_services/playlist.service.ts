@@ -4,6 +4,8 @@ import { SongRepository } from "../../repositories/song_repositories/song.reposi
 import { CreatePlaylistDto, UpdatePlaylistDto, QueryPlaylistsDto, AddSongToPlaylistDto, ReorderSongsDto } from "../../dtos/playlist_dtos/playlist.dtos";
 import { HttpError } from "../../errors/http-error";
 import { Utils } from "../../utils/common.utils";
+import { PlaylistModel } from "../../models/playlist_models/playlist.model";
+import { UserModel } from "../../models/user_models/auth.model";
 
 const playlistRepository = new PlaylistRepository();
 const playlistFavoriteRepository = new PlaylistFavoriteRepository();
@@ -205,6 +207,30 @@ export class PlaylistService {
         // Extract playlists from favorites
         const playlists = favorites.map(favorite => favorite.playlistId);
         return playlists;
+    }
+
+    async cleanOrphanedFavorites() {
+        const allFavorites = await playlistFavoriteRepository.getAllFavorites();
+        let deletedCount = 0;
+
+        for (const favorite of allFavorites) {
+            const [playlistExists, userExists] = await Promise.all([
+                PlaylistModel.exists({ _id: favorite.playlistId }),
+                UserModel.exists({ _id: favorite.userId }),
+            ]);
+
+            if (!playlistExists || !userExists) {
+                await playlistFavoriteRepository.deleteFavoriteById(favorite._id.toString());
+                deletedCount++;
+
+                // If playlist still exists but user is missing, keep favoriteCount accurate.
+                if (playlistExists && !userExists) {
+                    await playlistRepository.decrementFavoriteCount(favorite.playlistId.toString());
+                }
+            }
+        }
+
+        return { message: `Cleaned up ${deletedCount} orphaned favorites` };
     }
 
     // Helper method to enrich playlist with calculated data

@@ -315,4 +315,21 @@ export class SongController {
             });
         }
     }
+
+    // Get overall stats (totals across all songs)
+    async getOverallStats(req: Request, res: Response) {
+        try {
+            const stats = await songService.getOverallSongStats();
+            return res.status(200).json({
+                success: true,
+                data: stats,
+                message: "Overall song stats retrieved",
+            });
+        } catch (error: Error | any) {
+            return res.status(error.statusCode || 500).json({
+                success: false,
+                message: error.message || "Internal Server Error",
+            });
+        }
+    }
 }

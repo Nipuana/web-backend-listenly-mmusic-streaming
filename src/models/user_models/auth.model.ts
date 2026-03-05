@@ -10,7 +10,12 @@ const UserSchema: Schema = new Schema(
         role: { type: String, enum: ['user','artist',"pUser",'admin'], default: 'user' },
         profilePicture: { type: String, required: false },
         additionalInfo: {
-            phoneNumber: { type: String, required: false },
+            phoneNumber: {
+                type: String,
+                required: false,
+                trim: true,
+                match: [/^\d{10}$/, 'Phone number must be exactly 10 digits']
+            },
             address: { type: String, required: false },
             city: { type: String, required: false },
             country: { type: String, required: false },

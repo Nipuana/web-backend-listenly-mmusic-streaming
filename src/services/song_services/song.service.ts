@@ -131,4 +131,8 @@ export class SongService {
         }
         return song;
     }
+
+    async getOverallSongStats() {
+        return songRepository.getOverallStats();
+    }
 }

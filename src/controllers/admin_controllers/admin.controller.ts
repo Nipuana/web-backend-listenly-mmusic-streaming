@@ -3,8 +3,10 @@ import z from "zod"
 import { Request, Response } from "express";
 import { AdminUserService } from "../../services/admin_services/admin.service";
 import { LikeService } from "../../services/song_services/like.service";
+import { PlaylistService } from "../../services/playlist_services/playlist.service";
 let adminUserService = new AdminUserService();
 let likeService = new LikeService();
+let playlistService = new PlaylistService();
 
 export class AdminUserController{
     async createUser(req:Request, res: Response){
@@ -63,6 +65,15 @@ export class AdminUserController{
     async cleanOrphanedLikes(req: Request, res: Response) {
         try {
             const result = await likeService.cleanOrphanedLikes();
+            return res.status(200).json({ success: true, data: result, message: result.message });
+        } catch (error: Error | any) {
+            return res.status(error.statusCode || 500).json({ success: false, message: error.message || "Internal Server Error" });
+        }
+    }
+
+    async cleanOrphanedFavorites(req: Request, res: Response) {
+        try {
+            const result = await playlistService.cleanOrphanedFavorites();
             return res.status(200).json({ success: true, data: result, message: result.message });
         } catch (error: Error | any) {
             return res.status(error.statusCode || 500).json({ success: false, message: error.message || "Internal Server Error" });
