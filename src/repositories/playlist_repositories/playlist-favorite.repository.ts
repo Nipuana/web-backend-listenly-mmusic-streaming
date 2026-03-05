@@ -3,9 +3,11 @@ import { IPlaylistFavorite, PlaylistFavoriteModel } from "../../models/playlist_
 export interface IPlaylistFavoriteRepository {
     createFavorite(userId: string, playlistId: string): Promise<IPlaylistFavorite>;
     deleteFavorite(userId: string, playlistId: string): Promise<IPlaylistFavorite | null>;
+    deleteFavoriteById(id: string): Promise<IPlaylistFavorite | null>;
     getFavorite(userId: string, playlistId: string): Promise<IPlaylistFavorite | null>;
     getFavoritesByPlaylistId(playlistId: string, limit?: number, skip?: number): Promise<IPlaylistFavorite[]>;
     getFavoritesByUserId(userId: string, limit?: number, skip?: number): Promise<IPlaylistFavorite[]>;
+    getAllFavorites(): Promise<IPlaylistFavorite[]>;
     countFavoritesByPlaylistId(playlistId: string): Promise<number>;
 }
 
@@ -18,6 +20,11 @@ export class PlaylistFavoriteRepository implements IPlaylistFavoriteRepository {
 
     async deleteFavorite(userId: string, playlistId: string): Promise<IPlaylistFavorite | null> {
         const favorite = await PlaylistFavoriteModel.findOneAndDelete({ userId, playlistId });
+        return favorite;
+    }
+
+    async deleteFavoriteById(id: string): Promise<IPlaylistFavorite | null> {
+        const favorite = await PlaylistFavoriteModel.findByIdAndDelete(id);
         return favorite;
     }
 
@@ -43,6 +50,11 @@ export class PlaylistFavoriteRepository implements IPlaylistFavoriteRepository {
             .limit(limit)
             .skip(skip)
             .populate('playlistId');
+        return favorites;
+    }
+
+    async getAllFavorites(): Promise<IPlaylistFavorite[]> {
+        const favorites = await PlaylistFavoriteModel.find({});
         return favorites;
     }
 

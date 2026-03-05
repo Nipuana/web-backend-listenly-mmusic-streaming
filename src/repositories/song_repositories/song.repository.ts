@@ -11,6 +11,7 @@ export interface ISongRepository {
     searchSongs(searchTerm: string): Promise<ISong[]>;
     incrementPlayCount(id: string): Promise<ISong | null>;
     incrementListenTime(id: string, seconds: number): Promise<ISong | null>;
+    getOverallStats(): Promise<{ totalStreams: number; totalListenTimeSeconds: number; songCount: number }>;
 }
 
 export class SongRepository implements ISongRepository {
@@ -81,6 +82,26 @@ export class SongRepository implements ISongRepository {
             { new: true }
         );
         return song;
+    }
+
+    async getOverallStats(): Promise<{ totalStreams: number; totalListenTimeSeconds: number; songCount: number }> {
+        const result = await SongModel.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalStreams: { $sum: "$playCount" },
+                    totalListenTimeSeconds: { $sum: "$listenTimeSeconds" },
+                    songCount: { $sum: 1 },
+                },
+            },
+        ]);
+
+        const row = result?.[0];
+        return {
+            totalStreams: row?.totalStreams ?? 0,
+            totalListenTimeSeconds: row?.totalListenTimeSeconds ?? 0,
+            songCount: row?.songCount ?? 0,
+        };
     }
 
     async incrementLikeCount(id: string): Promise<ISong | null> {

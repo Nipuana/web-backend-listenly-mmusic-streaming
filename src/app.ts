@@ -11,6 +11,8 @@ import songRoutes from './routes/song_routes/song.route'
 import likeRoutes from './routes/song_routes/like.route'
 import playlistRoutes from './routes/playlist_routes/playlist.route'
 import playlistFavoriteRoutes from './routes/playlist_routes/favorite.route'
+import artistVerificationRoutes from './routes/user_routes/artistVerificationRequest.route'
+import adminArtistVerificationRoutes from './routes/admin_routes/artistVerificationRequest.route'
 
 const app:Application = express();
 // const PORT:number = 3000;
@@ -37,5 +39,7 @@ app.use('/api/songs',songRoutes)
 app.use('/api/songs',likeRoutes)
 app.use('/api/playlists',playlistRoutes)
 app.use('/api/playlists',playlistFavoriteRoutes)
+app.use('/api/artist-verification', artistVerificationRoutes)
+app.use('/api/admin/artist-verification', adminArtistVerificationRoutes)
 
 export default app;

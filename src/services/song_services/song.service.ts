@@ -1,9 +1,11 @@
 import { SongRepository } from "../../repositories/song_repositories/song.repository";
+import { LikeRepository } from "../../repositories/song_repositories/like.repository";
 import { CreateSongDto, UpdateSongDto, QuerySongsDto } from "../../dtos/song _dtos/song.dtos";
 import { HttpError } from "../../errors/http-error";
 import { Utils } from "../../utils/common.utils";
 
 const songRepository = new SongRepository();
+const likeRepository = new LikeRepository();
 
 export class SongService {
     async createSong(data: CreateSongDto, userId: string, user: any) {
@@ -35,7 +37,7 @@ export class SongService {
         const { genre, search, sortBy, order, limit, page } = query;
         
         // Build filter object
-        const filter: any = { isPublic: true };
+        const filter: any = { visibility: 'public' };
         
         if (genre) {
             filter.genre = genre;
@@ -68,7 +70,7 @@ export class SongService {
         }
 
         // Check if user is the owner of the song
-        if (song.uploadedBy.toString() !== userId) {
+        if (!song.uploadedBy._id.equals(userId)) {
             throw new HttpError(403, "You are not authorized to update this song");
         }
 
@@ -84,9 +86,12 @@ export class SongService {
         }
 
         // Check if user is the owner or an admin
-        if (song.uploadedBy.toString() !== userId && userRole !== 'admin') {
+        if (!song.uploadedBy._id.equals(userId) && userRole !== 'admin') {
             throw new HttpError(403, "You are not authorized to delete this song");
         }
+
+        // Remove all likes for this song
+        await likeRepository.deleteLikesBySongId(songId);
 
         const deletedSong = await songRepository.deleteSongById(songId);
         return deletedSong;
@@ -125,5 +130,9 @@ export class SongService {
             throw new HttpError(404, "Song not found");
         }
         return song;
+    }
+
+    async getOverallSongStats() {
+        return songRepository.getOverallStats();
     }
 }

@@ -2,9 +2,9 @@ import request from 'supertest';
 import app from "../../app";
 import { UserModel } from '../../models/user_models/auth.model';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../../config';
+import { JWT_SECRET } from '../../config/db_config';
 
-jest.mock('../../config/email', () => ({
+jest.mock('../../config/req_email_config/email', () => ({
     sendEmail: jest.fn().mockResolvedValue(undefined),
 }));
 
@@ -208,7 +208,7 @@ describe(
                 test(
                     "should reset password",
                     async () => {
-                        const token = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '1h' });
+                        const token = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '30d' });
                         const response = await request(app)
                             .post(`/api/auth/reset-password/${token}`)
                             .send({ newPassword: "NewPass@123" });

@@ -3,8 +3,15 @@ import { CreateSongDto, UpdateSongDto, QuerySongsDto, TrackListenTimeDto } from 
 import { Utils } from "../../utils/common.utils";
 import { Request, Response } from "express";
 import z from "zod";
+import { parseFile } from 'music-metadata';
 
 const songService = new SongService();
+
+// Helper function to get audio duration
+const getAudioDuration = async (filePath: string): Promise<number> => {
+    const metadata = await parseFile(filePath);
+    return Math.round(metadata.format.duration || 0);
+};
 
 export class SongController {
     // Create a new song
@@ -17,12 +24,16 @@ export class SongController {
 
             Utils.validateFilePresence(audioFile, 'Audio file');
 
+            // Get audio duration
+            const audioFilePath = audioFile.path;
+            const duration = await getAudioDuration(audioFilePath);
+
             // Prepare data with file URLs
             const bodyData = {
                 ...req.body,
                 audioUrl: `/uploads/audio/${audioFile.filename}`,
-                coverImageUrl: coverImage ? Utils.generateFileUrl('images/song_img', coverImage.filename) : undefined,
-                duration: req.body.duration ? parseFloat(req.body.duration) : undefined,
+                coverImageUrl: coverImage ? Utils.generateFileUrl('images/song_img', coverImage.filename) : '/uploads/defaults/song_default.png',
+                duration: duration, // Auto-calculated
             };
 
             const parsedData = CreateSongDto.safeParse(bodyData);
@@ -146,11 +157,17 @@ export class SongController {
             const audioFile = files?.['audioFile']?.[0];
             const coverImage = files?.['coverImage']?.[0];
 
+            let duration: number | undefined;
+            if (audioFile) {
+                // Get new audio duration if file is updated
+                const audioFilePath = audioFile.path;
+                duration = await getAudioDuration(audioFilePath);
+            }
+
             const bodyData = {
                 ...req.body,
-                ...(audioFile && { audioUrl: `/uploads/audio/${audioFile.filename}` }),
+                ...(audioFile && { audioUrl: `/uploads/audio/${audioFile.filename}`, duration }),
                 ...(coverImage && { coverImageUrl: `/uploads/images/song_img/${coverImage.filename}` }),
-                ...(req.body.duration && { duration: parseFloat(req.body.duration) }),
             };
 
             const parsedData = UpdateSongDto.safeParse(bodyData);
@@ -295,6 +312,23 @@ export class SongController {
             return res.status(error.statusCode || 500).json({
                 success: false,
                 message: error.message || "Internal Server Error"
+            });
+        }
+    }
+
+    // Get overall stats (totals across all songs)
+    async getOverallStats(req: Request, res: Response) {
+        try {
+            const stats = await songService.getOverallSongStats();
+            return res.status(200).json({
+                success: true,
+                data: stats,
+                message: "Overall song stats retrieved",
+            });
+        } catch (error: Error | any) {
+            return res.status(error.statusCode || 500).json({
+                success: false,
+                message: error.message || "Internal Server Error",
             });
         }
     }

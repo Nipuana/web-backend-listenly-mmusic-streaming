@@ -2,9 +2,9 @@ import { UserRepository } from "../../repositories/user_repositories/auth.reposi
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from "../../dtos/user_dtos/auth.dtos";
 import bcrypt from 'bcryptjs';
 import { HttpError } from "../../errors/http-error";
-import { JWT_SECRET } from "../../config";
+import { JWT_SECRET } from "../../config/db_config";
 import jwt from 'jsonwebtoken';
-import { sendEmail } from "../../config/email";
+import { sendEmail } from "../../config/req_email_config/email";
 
 const CLIENT_URL = process.env.CLIENT_URL as string;
 
@@ -65,14 +65,14 @@ async updateUser(userId: string, data: UpdateUserDto){
         if(!user){
             throw new HttpError(404, "User not found");
         }
-        if(user.email !== data.email){
-            const emailExists = await userRepository.getUserByEmail(data.email!);
+        if(data.email && user.email !== data.email){
+            const emailExists = await userRepository.getUserByEmail(data.email);
             if(emailExists){
                 throw new HttpError(409, "Email already exists");
             }
         }
-        if(user.username !== data.username){
-            const usernameExists = await userRepository.getUserByUsername(data.username!);
+        if(data.username && user.username !== data.username){
+            const usernameExists = await userRepository.getUserByUsername(data.username);
             if(usernameExists){
                 throw new HttpError(409, "Username already exists");
             }
@@ -92,7 +92,7 @@ async sendResetPasswordEmail(email?: string) {
         if (!user) {
             throw new HttpError(404, "User not found");
         }
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' }); // 1 hour expiry
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' }); // 1 hour expiry
         const resetLink = `${CLIENT_URL}/reset-password?token=${token}`;
         const html = `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.</p>`;
         await sendEmail(user.email, "Password Reset", html);

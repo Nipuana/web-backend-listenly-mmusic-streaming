@@ -1,5 +1,5 @@
 import multer from "multer";
-import uuid from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 import path from "path";
 import fs from "fs";
 import { HttpError } from "../errors/http-error";
@@ -46,7 +46,7 @@ const imageStorage = multer.diskStorage({
         }
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = uuid.v4();
+        const uniqueSuffix = uuidv4();
         const extension = path.extname(file.originalname);
         cb(null, uniqueSuffix + extension);
     }
@@ -58,7 +58,7 @@ const audioStorage = multer.diskStorage({
         cb(null, audioDir);
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = uuid.v4();
+        const uniqueSuffix = uuidv4();
         const extension = path.extname(file.originalname);
         cb(null, uniqueSuffix + extension);
     }
@@ -125,7 +125,7 @@ const songStorage = multer.diskStorage({
         }
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = uuid.v4();
+        const uniqueSuffix = uuidv4();
         const extension = path.extname(file.originalname);
         cb(null, file.fieldname + '-' + uniqueSuffix + extension);
     }

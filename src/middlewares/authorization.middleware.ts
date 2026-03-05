@@ -1,6 +1,6 @@
 import { Request,Response,NextFunction } from "express";
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from "../config";
+import { JWT_SECRET } from "../config/db_config";
 import{IUser} from '../models/user_models/auth.model';
 import { UserRepository } from "../repositories/user_repositories/auth.repository";
 import { HttpError } from "../errors/http-error";

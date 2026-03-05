@@ -29,5 +29,10 @@ export const LoginUserDto= z.object({
 
 export type LoginUserDto= z.infer<typeof LoginUserDto>;
 
-export const UpdateUserDto= CreateUserDto.partial();
+export const UpdateUserDto = userType.pick({
+    email: true,
+    username: true,
+    password: true,
+    profilePicture: true
+}).partial();
 export type UpdateUserDto= z.infer<typeof UpdateUserDto>;
