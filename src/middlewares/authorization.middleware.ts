@@ -13,11 +13,8 @@ declare global{
         }
     }
 }
-//creating a tag for user
-//can use req.user in other files
 
 export async function authorizedMiddleware(req:Request,res:Response,next:NextFunction){
-//     //express function can have next function to go next
     try{
         const authHeader=req.headers.authorization;
         if(!authHeader || !authHeader.startsWith('Bearer '))//"Bearer <token" 0 -> Bearer 1-> token

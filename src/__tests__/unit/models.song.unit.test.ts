@@ -1,4 +1,4 @@
-import { SongModel } from '../../models/song_models/song.model';
+      import { SongModel } from '../../models/song_models/song.model';
 
 describe('SongModel unit tests', () => {
   test('requires title', () => {

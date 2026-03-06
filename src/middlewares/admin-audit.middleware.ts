@@ -32,10 +32,6 @@ function sanitizeObject(value: any, depth: number = 0): any {
     return output;
 }
 
-/**
- * Logs an admin action to MongoDB after the response finishes.
- * Safe default: it only logs when req.user.role === 'admin'.
- */
 export function auditAdminAction(action: string) {
     return function adminAuditMiddleware(req: Request, res: Response, next: NextFunction) {
         const start = Date.now();
