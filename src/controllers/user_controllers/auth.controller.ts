@@ -95,7 +95,8 @@ async updateUser(req: Request, res: Response){
     async sendResetPasswordEmail(req: Request, res: Response) {
         try {
             const email = req.body.email;
-            const user = await authService.sendResetPasswordEmail(email);
+            const publicApiBaseUrl = `${req.protocol}://${req.get('host')}`;
+            const user = await authService.sendResetPasswordEmail(email, publicApiBaseUrl);
             return res.status(200).json(
                 { success: true,
                     data: user,
@@ -104,6 +105,18 @@ async updateUser(req: Request, res: Response){
         } catch (error: Error | any) {
             return res.status(error.statusCode ?? 500).json(
                 { success: false, message: error.message || "Internal Server Error" }
+            );
+        }
+    }
+
+    async mobileResetLink(req: Request, res: Response) {
+        try {
+            const token = req.query.token?.toString();
+            const html = authService.getMobileResetRedirectPage(token);
+            return res.status(200).contentType('text/html').send(html);
+        } catch (error: Error | any) {
+            return res.status(error.statusCode ?? 500).send(
+                `<h2>Unable to open mobile reset</h2><p>${error.message || "Internal Server Error"}</p>`
             );
         }
     }
